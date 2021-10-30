@@ -11,12 +11,21 @@ IRProgram * ProgramNode::to3AC(TypeAnalysis * ta){
 }
 
 void FnDeclNode::to3AC(IRProgram * prog){
-	TODO(Implement me)
+	Procedure *proc = new Procedure(prog,this->ID()->getName());
+	for (auto formal: *myFormals)
+	{
+		formal ->to3AC(proc);
+	}
+
+	for (auto stmt: *myBody)
+	{
+		stmt ->to3AC(proc);
+	}
 }
 
 void FnDeclNode::to3AC(Procedure * proc){
 	//This never needs to be implemented,
-	// the function only exists because of 
+	// the function only exists because of
 	// inheritance needs (A function declaration
 	// never occurs within another function)
 	throw new InternalError("FnDecl at a local scope");
@@ -24,14 +33,16 @@ void FnDeclNode::to3AC(Procedure * proc){
 
 void FormalDeclNode::to3AC(IRProgram * prog){
 	//This never needs to be implemented,
-	// the function only exists because of 
-	// inheritance needs (A formal never 
+	// the function only exists because of
+	// inheritance needs (A formal never
 	// occurs at global scope)
 	throw new InternalError("Formal at a global scope");
 }
 
 void FormalDeclNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	SemSymbol * sym = ID()->getSymbol();
+	assert(sym != nullptr);
+	prog->gatherGlobal(sym);
 }
 
 void RecordTypeDeclNode::to3AC(IRProgram * prog){
@@ -81,23 +92,48 @@ Opd * NotNode::flatten(Procedure * proc){
 }
 
 Opd * PlusNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, ADD64, e1, e2);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * MinusNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, SUB64, e1, e2);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * TimesNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, MULT64, e1, e2);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * DivideNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, DIV64, e1, e2);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * AndNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, DIV64, e1, e2);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * OrNode::flatten(Procedure * proc){
@@ -185,7 +221,7 @@ Opd * IndexNode::flatten(Procedure * proc){
 }
 
 //We only get to this node if we are in a stmt
-// context (DeclNodes protect descent) 
+// context (DeclNodes protect descent)
 Opd * IDNode::flatten(Procedure * proc){
 	TODO(Implement me)
 }
