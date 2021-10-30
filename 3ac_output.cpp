@@ -61,7 +61,11 @@ Opd * FalseNode::flatten(Procedure * proc){
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * srcOpd = mySrc->flatten(proc);
+	Opd * dstOpd = myDst->flatten(proc);
+	AssignQuad * assign = new AssignQuad(dstOpd, srcOpd);
+	proc->addQuad(assign);
+	return dstOpd;
 }
 
 Opd * LValNode::flatten(Procedure * proc){
@@ -129,7 +133,7 @@ Opd * GreaterEqNode::flatten(Procedure * proc){
 }
 
 void AssignStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	this->myExp->flatten(proc);
 }
 
 void PostIncStmtNode::to3AC(Procedure * proc){
@@ -187,7 +191,7 @@ Opd * IndexNode::flatten(Procedure * proc){
 //We only get to this node if we are in a stmt
 // context (DeclNodes protect descent) 
 Opd * IDNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	return proc->getSymOpd(this->mySymbol);
 }
 
 }
