@@ -228,7 +228,16 @@ void ReportStmtNode::to3AC(Procedure * proc){
 }
 
 void IfStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd* condition = myCond->flatten(proc);
+	Label * after = proc->makeLabel();
+	Quad condQuad = new IfzQuad(condition, after);
+	Quad nop = new NopQuad();
+	nop->addLabel(after);
+	proc -> addQuad(condQuad);
+	proc -> addQuad(nop);
+	myBody -> to3AC(proc);
+
+
 }
 
 void IfElseStmtNode::to3AC(Procedure * proc){
@@ -236,7 +245,20 @@ void IfElseStmtNode::to3AC(Procedure * proc){
 }
 
 void WhileStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Quad nop1 = new NopQuad();
+	Label * head = proc->makeLabel();
+	nop1->addLabel(head);
+	proc -> addQuad(nop1);
+
+	Quad nop2 = new NopQuad();
+	Label * after = proc->makeLabel();
+	nop2->addLabel(after);
+	proc -> addQuad(nop2);
+
+	Opd* condition = myCond->flatten(proc);
+	Quad condQuad = new IfzQuad(condition, after);
+	proc -> addQuad(condQuad);
+	myBody -> to3AC(proc);
 }
 
 void CallStmtNode::to3AC(Procedure * proc){
@@ -244,7 +266,16 @@ void CallStmtNode::to3AC(Procedure * proc){
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+
+
+	Opd* stmt = myExp->flatten(proc);
+	Quad return = new SetRetQuad(stmt);
+	proc -> addQuad(return);
+
+	Label * function_end = proc->makeLabel();
+	Quad end = new GotoQuad(function_end);
+	proc -> addQuad(end);
+
 }
 
 void VarDeclNode::to3AC(Procedure * proc){
