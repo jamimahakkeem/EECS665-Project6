@@ -84,18 +84,26 @@ Opd * CallExpNode::flatten(Procedure * proc){
 }
 
 Opd * NegNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* e = exp->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new UnaryOpQuad(temp, NEG64, e);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * NotNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* e = exp->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new UnaryOpQuad(temp, NOT8, e);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * PlusNode::flatten(Procedure * proc){
 	Opd* lhs = e1->flatten(proc);
 	Opd* rhs = e2->flatten(proc);
 	Opd* temp = proc->makeTmp(this->getWidth());
-	Quad * quad = new BinOpQuad(temp, ADD64, e1, e2);
+	Quad * quad = new BinOpQuad(temp, ADD64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
 }
@@ -104,7 +112,7 @@ Opd * MinusNode::flatten(Procedure * proc){
 	Opd* lhs = e1->flatten(proc);
 	Opd* rhs = e2->flatten(proc);
 	Opd* temp = proc->makeTmp(this->getWidth());
-	Quad * quad = new BinOpQuad(temp, SUB64, e1, e2);
+	Quad * quad = new BinOpQuad(temp, SUB64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
 }
@@ -113,7 +121,7 @@ Opd * TimesNode::flatten(Procedure * proc){
 	Opd* lhs = e1->flatten(proc);
 	Opd* rhs = e2->flatten(proc);
 	Opd* temp = proc->makeTmp(this->getWidth());
-	Quad * quad = new BinOpQuad(temp, MULT64, e1, e2);
+	Quad * quad = new BinOpQuad(temp, MULT64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
 }
@@ -122,7 +130,7 @@ Opd * DivideNode::flatten(Procedure * proc){
 	Opd* lhs = e1->flatten(proc);
 	Opd* rhs = e2->flatten(proc);
 	Opd* temp = proc->makeTmp(this->getWidth());
-	Quad * quad = new BinOpQuad(temp, DIV64, e1, e2);
+	Quad * quad = new BinOpQuad(temp, DIV64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
 }
@@ -131,37 +139,72 @@ Opd * AndNode::flatten(Procedure * proc){
 	Opd* lhs = e1->flatten(proc);
 	Opd* rhs = e2->flatten(proc);
 	Opd* temp = proc->makeTmp(this->getWidth());
-	Quad * quad = new BinOpQuad(temp, DIV64, e1, e2);
+	Quad * quad = new BinOpQuad(temp, AND64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
 }
 
 Opd * OrNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, OR64, lhs, rhs);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * EqualsNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, EQ64, lhs, rhs);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * NotEqualsNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, NEQ64, lhs, rhs);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * LessNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, LT64, lhs, rhs);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * GreaterNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, GT64, lhs, rhs);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * LessEqNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, LTE64, lhs, rhs);
+	proc->addQuad(quad);
+	return temp;
 }
 
 Opd * GreaterEqNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd* lhs = e1->flatten(proc);
+	Opd* rhs = e2->flatten(proc);
+	Opd* temp = proc->makeTmp(this->getWidth());
+	Quad * quad = new BinOpQuad(temp, GTE64, lhs, rhs);
+	proc->addQuad(quad);
+	return temp;
 }
 
 void AssignStmtNode::to3AC(Procedure * proc){
