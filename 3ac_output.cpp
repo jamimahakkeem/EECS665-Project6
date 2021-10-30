@@ -39,7 +39,7 @@ void RecordTypeDeclNode::to3AC(IRProgram * prog){
 }
 
 void RecordTypeDeclNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	TODO(Implement me)	// never used?
 }
 
 Opd * IntLitNode::flatten(Procedure * proc){
@@ -53,11 +53,15 @@ Opd * StrLitNode::flatten(Procedure * proc){
 }
 
 Opd * TrueNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	// TODO(Implement me)
+	const DataType * type = proc->getProg()->nodeType(this);
+	return new LitOpd("true", 8);
 }
 
 Opd * FalseNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	// TODO(Implement me)
+	const DataType * type = proc->getProg()->nodeType(this);
+	return new LitOpd("false", 8);
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
@@ -137,19 +141,33 @@ void AssignStmtNode::to3AC(Procedure * proc){
 }
 
 void PostIncStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	// TODO(Implement me)
+	Opd lhs = myLVal->flatten(proc);
+	LitOpd * lit1 = new LitOpd("1");
+	BinOpQuad * quad = new BinOpQuad(lhs, ADD64, lhs, lit1);
+	proc->addQuad(quad);
 }
 
 void PostDecStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	// TODO(Implement me)
+	Opd lhs = myLVal->flatten(proc);
+	LitOpd * lit1 = new LitOpd("1");
+	BinOpQuad * quad = new BinOpQuad(lhs, SUB64, lhs, lit1);
+	proc->addQuad(quad);
 }
 
 void ReceiveStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd * arg = myDst->flatten(proc);
+	const DataType * type = proc->getProg()->nodeType(this);
+	ReceiveQuad * rcv = new ReceiveQuad(arg, type);
+	proc->addQuad(rcv);
 }
 
 void ReportStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd * arg = mySrc->flatten(proc);
+	const DataType * type = proc->getProg()->nodeType(this);
+	ReportQuad * report = new ReportQuad(arg, type);
+	proc->addQuad(report);
 }
 
 void IfStmtNode::to3AC(Procedure * proc){
