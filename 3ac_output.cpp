@@ -89,7 +89,13 @@ Opd * LValNode::flatten(Procedure * proc){
 }
 
 Opd * CallExpNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	Opd * id = myID->flatten(proc);
+	for(auto arg : *myArgs) {
+		arg->flatten(proc);
+	}
+	CallQuad * callquad = new CallQuad(myID->getSymbol());
+	proc->addQuad(callquad);
+	return id;
 }
 
 Opd * NegNode::flatten(Procedure * proc){
@@ -285,7 +291,7 @@ void WhileStmtNode::to3AC(Procedure * proc){
 }
 
 void CallStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	this->myCallExp->flatten(proc);
 }
 
 void ReturnStmtNode::to3AC(Procedure * proc){
