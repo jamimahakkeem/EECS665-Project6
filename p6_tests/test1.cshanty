@@ -1,0 +1,8 @@
+void main() {
+	int a;
+	a = -1;
+	a++;
+	a--;
+	report a;
+	receive a;
+}

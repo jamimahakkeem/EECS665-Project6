@@ -1,0 +1,11 @@
+void main() {
+	int a;
+	a = 5;
+	bool b;
+	b = a < 1;
+	b = a <= 1;
+	b = a > 1;
+	b = a >= 1;
+	b = a == 1;
+	b = a != 1;
+}
