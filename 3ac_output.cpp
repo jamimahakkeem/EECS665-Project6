@@ -270,7 +270,19 @@ void IfStmtNode::to3AC(Procedure * proc){
 }
 
 void IfElseStmtNode::to3AC(Procedure * proc){
-	TODO(Implement me)
+	Opd* condition = myCond->flatten(proc);
+	Label * else_label = proc->makeLabel();
+	Label * after_label = proc->makeLabel();
+	Label * exit_label = proc->makeLabel();
+	Quad * condQuad = new IfzQuad(condition, else_label);
+	Quad * skipQuad = new GotoQuad(after_label);
+	Quad * exitQuad = new GotoQuad(exit_label);
+	Quad * after_nop = new NopQuad();
+	after_nop->addLabel(after_label);
+	proc -> addQuad(condQuad);
+	proc -> addQuad(skipQuad);
+	proc -> addQuad(exitQuad);
+	proc -> addQuad(after_nop);
 }
 
 void WhileStmtNode::to3AC(Procedure * proc){
