@@ -12,7 +12,7 @@ Procedure::Procedure(IRProgram * prog, std::string name)
 	if (myName.compare("main") == 0){
 		enter->addLabel(new Label("main"));
 	} else {
-		enter->addLabel(new Label("fun_" + myName));
+		enter->addLabel(new Label(myName));
 	}
 	leaveLabel = myProg->makeLabel();
 	leave->addLabel(leaveLabel);
@@ -33,7 +33,7 @@ std::string Procedure::toString(bool verbose){
 
 	res += "[BEGIN " + this->getName() + " LOCALS]\n";
 	for (const auto formal : this->formals){
-		res += formal->getName() + " (formal arg of " 
+		res += formal->getName() + " (formal arg of "
 			+ std::to_string(formal->getWidth()) + ")\n";
 			+ " bytes)\n";
 	}
@@ -99,7 +99,7 @@ SymOpd * Procedure::getSymOpd(SemSymbol * sym){
 	if (localFound != locals.end()){
 		return localFound->second;
 	}
-	
+
 	return this->getProg()->getGlobal(sym);
 }
 
