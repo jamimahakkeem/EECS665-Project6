@@ -1,12 +1,11 @@
-void main()
-{
-string words;
-words = "hello";
-fn(5,8);
-}
-
 int fn(int n1, int n2){
 int ans;
 ans = n1+n2;
 return ans;
+}
+
+void main()
+{
+report "hello";
+fn(5,8);
 }
