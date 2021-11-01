@@ -65,13 +65,11 @@ Opd * StrLitNode::flatten(Procedure * proc){
 }
 
 Opd * TrueNode::flatten(Procedure * proc){
-	// TODO(Implement me)
 	const DataType * type = proc->getProg()->nodeType(this);
 	return new LitOpd("true", 8);
 }
 
 Opd * FalseNode::flatten(Procedure * proc){
-	// TODO(Implement me)
 	const DataType * type = proc->getProg()->nodeType(this);
 	return new LitOpd("false", 8);
 }
@@ -227,7 +225,6 @@ void AssignStmtNode::to3AC(Procedure * proc){
 }
 
 void PostIncStmtNode::to3AC(Procedure * proc){
-	// TODO(Implement me)
 	Opd * lhs = myLVal->flatten(proc);
 	LitOpd * lit1 = new LitOpd("1", 8);
 	BinOpQuad * quad = new BinOpQuad(lhs, ADD64, lhs, lit1);
@@ -235,7 +232,6 @@ void PostIncStmtNode::to3AC(Procedure * proc){
 }
 
 void PostDecStmtNode::to3AC(Procedure * proc){
-	// TODO(Implement me)
 	Opd * lhs = myLVal->flatten(proc);
 	LitOpd * lit1 = new LitOpd("1", 8);
 	BinOpQuad * quad = new BinOpQuad(lhs, SUB64, lhs, lit1);
@@ -310,13 +306,18 @@ void WhileStmtNode::to3AC(Procedure * proc){
 
 	Quad * nop2 = new NopQuad();
 	Label * after = proc->makeLabel();
-	nop2->addLabel(after);
-	proc -> addQuad(nop2);
+	Quad * gotoHead = new GotoQuad(head);
 
 	Opd* condition = myCond->flatten(proc);
 	Quad * condQuad = new IfzQuad(condition, after);
 	proc -> addQuad(condQuad);
-	// myBody -> to3AC(proc);
+	for(auto stmt: *myBody) {
+		stmt->to3AC(proc);
+	}
+	proc->addQuad(gotoHead);
+
+	nop2->addLabel(after);
+	proc -> addQuad(nop2);
 }
 
 void CallStmtNode::to3AC(Procedure * proc){
