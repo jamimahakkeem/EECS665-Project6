@@ -244,15 +244,16 @@ void PostDecStmtNode::to3AC(Procedure * proc){
 
 void ReceiveStmtNode::to3AC(Procedure * proc){
 	Opd * arg = myDst->flatten(proc);
-	const DataType * type = proc->getProg()->nodeType(this);
-	ReceiveQuad * rcv = new ReceiveQuad(arg, type);
+	// const DataType * type = proc->getSymOpd(myDst->getSymbol());
+	ReceiveQuad * rcv = new ReceiveQuad(arg, nullptr);
 	proc->addQuad(rcv);
 }
 
 void ReportStmtNode::to3AC(Procedure * proc){
 	Opd * arg = mySrc->flatten(proc);
-	const DataType * type = proc->getProg()->nodeType(this);
-	ReportQuad * report = new ReportQuad(arg, type);
+	// const DataType * type = proc->getProg()->nodeType(this);
+	// const DataType * type = 
+	ReportQuad * report = new ReportQuad(arg, nullptr);
 	proc->addQuad(report);
 }
 
@@ -260,28 +261,44 @@ void IfStmtNode::to3AC(Procedure * proc){
 	Opd* condition = myCond->flatten(proc);
 	Label * after = proc->makeLabel();
 	Quad * condQuad = new IfzQuad(condition, after);
+
 	Quad * nop = new NopQuad();
 	nop->addLabel(after);
 	proc -> addQuad(condQuad);
+	for(auto stmt: *myBody) {
+		stmt->to3AC(proc);
+	}
+	// Label * end = proc->makeLabel();
+	Quad * gotoEnd = new GotoQuad(proc->getLeaveLabel());
+	proc->addQuad(gotoEnd);
 	proc -> addQuad(nop);
-	// myBody -> to3AC(proc);
-
-
 }
 
 void IfElseStmtNode::to3AC(Procedure * proc){
 	Opd* condition = myCond->flatten(proc);
 	Label * else_label = proc->makeLabel();
 	Label * after_label = proc->makeLabel();
-	Label * exit_label = proc->makeLabel();
+
 	Quad * condQuad = new IfzQuad(condition, else_label);
 	Quad * skipQuad = new GotoQuad(after_label);
-	Quad * exitQuad = new GotoQuad(exit_label);
+	Quad * elseQuad = new GotoQuad(else_label);
+	Quad * else_nop = new NopQuad();
 	Quad * after_nop = new NopQuad();
+
 	after_nop->addLabel(after_label);
 	proc -> addQuad(condQuad);
+	for(auto stmt: *myBodyTrue) {
+		stmt->to3AC(proc);
+	}
+	proc->addQuad(skipQuad);
+
+	else_nop->addLabel(else_label);
+	proc->addQuad(else_nop);
+	for(auto stmt: *myBodyFalse) {
+		stmt->to3AC(proc);
+	}
+
 	proc -> addQuad(skipQuad);
-	proc -> addQuad(exitQuad);
 	proc -> addQuad(after_nop);
 }
 
@@ -314,8 +331,8 @@ void ReturnStmtNode::to3AC(Procedure * proc){
 	proc -> addQuad(ret);
 
 	Label * function_end = proc->makeLabel();
-	Quad * end = new GotoQuad(function_end);
-	proc -> addQuad(end);
+	// Quad * end = new GotoQuad(function_end);
+	// proc -> addQuad(end);
 
 }
 
