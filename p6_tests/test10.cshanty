@@ -1,0 +1,9 @@
+void func(){
+int a;
+receive a;
+
+if (a == 0)
+{
+a++;
+}
+}
