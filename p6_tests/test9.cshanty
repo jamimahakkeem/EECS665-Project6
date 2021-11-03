@@ -1,0 +1,10 @@
+record TheRecord{
+	int a;
+	int b;
+	int c;
+}
+
+void f(){
+	TheRecord inst;
+	inst[a] = 1;
+}

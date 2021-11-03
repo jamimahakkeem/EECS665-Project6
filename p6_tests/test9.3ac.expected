@@ -1,0 +1,10 @@
+[BEGIN GLOBALS]
+[END GLOBALS]
+[BEGIN f LOCALS]
+inst (local var of 24 bytes)
+[addrTmp0] (tmp loc of 8 bytes)
+[END f LOCALS]
+fun_f:      enter f
+            [addrTmp0] := inst ADD64 16
+            [[addrTmp0]] := 1
+lbl_0:      leave f
