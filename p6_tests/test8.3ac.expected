@@ -1,0 +1,26 @@
+[BEGIN GLOBALS]
+[str_0] "hello"
+[END GLOBALS]
+[BEGIN fn LOCALS]
+n1 (formal arg of 8)
+n2 (formal arg of 8)
+ans (local var of 8 bytes)
+tmp0 (tmp var of 8 bytes)
+[END fn LOCALS]
+fun_fn:     enter fn
+            getarg 1 [n1]
+            getarg 2 [n2]
+            [tmp0] := [n1] ADD64 [n2]
+            [ans] := [tmp0]
+            setret [ans]
+            goto lbl_0
+lbl_0:      leave fn
+[BEGIN main LOCALS]
+tmp0 (tmp var of 8 bytes)
+[END main LOCALS]
+main:       enter main
+            REPORT [[str_0]]
+            setarg 1 5
+            setarg 2 8
+            call fn
+lbl_1:      leave main

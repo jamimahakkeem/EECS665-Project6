@@ -1,0 +1,27 @@
+[BEGIN GLOBALS]
+[END GLOBALS]
+[BEGIN main LOCALS]
+a (local var of 8 bytes)
+b (local var of 8 bytes)
+tmp0 (tmp var of 8 bytes)
+tmp1 (tmp var of 8 bytes)
+tmp2 (tmp var of 8 bytes)
+tmp3 (tmp var of 8 bytes)
+tmp4 (tmp var of 8 bytes)
+tmp5 (tmp var of 8 bytes)
+[END main LOCALS]
+main:       enter main
+            [a] := 5
+            [tmp0] := [a] LT64 1
+            [b] := [tmp0]
+            [tmp1] := [a] LTE64 1
+            [b] := [tmp1]
+            [tmp2] := [a] GT64 1
+            [b] := [tmp2]
+            [tmp3] := [a] GTE64 1
+            [b] := [tmp3]
+            [tmp4] := [a] EQ64 1
+            [b] := [tmp4]
+            [tmp5] := [a] NEQ64 1
+            [b] := [tmp5]
+lbl_0:      leave main

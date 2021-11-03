@@ -1,0 +1,8 @@
+void main() {
+	bool b;
+	b = true;
+	b = false;
+	b = !b;
+	b = b && b;
+	b = b || b;
+}

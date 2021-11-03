@@ -1,0 +1,14 @@
+[BEGIN GLOBALS]
+[END GLOBALS]
+[BEGIN main LOCALS]
+a (local var of 8 bytes)
+tmp0 (tmp var of 8 bytes)
+[END main LOCALS]
+main:       enter main
+            [tmp0] := NEG64 1
+            [a] := [tmp0]
+            [a] := [a] ADD64 1
+            [a] := [a] SUB64 1
+            REPORT [a]
+            RECEIVE [a]
+lbl_0:      leave main
