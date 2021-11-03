@@ -13,9 +13,14 @@ IRProgram * ProgramNode::to3AC(TypeAnalysis * ta){
 void FnDeclNode::to3AC(IRProgram * prog){
 	// Procedure *proc = new Procedure(prog,this->ID()->getName());
 	Procedure * proc = prog->makeProc(this->ID()->getName());
+	size_t index = 1;
 	for (auto formal: *myFormals)
 	{
 		formal ->to3AC(proc);
+		Opd * tempOpd = formal->ID()->flatten(proc);
+		GetArgQuad * getArg = new GetArgQuad(index, tempOpd);
+		proc->addQuad(getArg);
+		index++;
 	}
 
 	for (auto stmt: *myBody)
@@ -66,12 +71,12 @@ Opd * StrLitNode::flatten(Procedure * proc){
 
 Opd * TrueNode::flatten(Procedure * proc){
 	const DataType * type = proc->getProg()->nodeType(this);
-	return new LitOpd("true", 8);
+	return new LitOpd(std::to_string(1), 8);
 }
 
 Opd * FalseNode::flatten(Procedure * proc){
 	const DataType * type = proc->getProg()->nodeType(this);
-	return new LitOpd("false", 8);
+	return new LitOpd(std::to_string(0), 8);
 }
 
 Opd * AssignExpNode::flatten(Procedure * proc){
@@ -88,8 +93,13 @@ Opd * LValNode::flatten(Procedure * proc){
 
 Opd * CallExpNode::flatten(Procedure * proc){
 	Opd * id = myID->flatten(proc);
+	size_t index = 1;
 	for(auto arg : *myArgs) {
-		arg->flatten(proc);
+		// arg->flatten(proc);
+		Opd * tempOpd = arg->flatten(proc);
+		SetArgQuad * setArg = new SetArgQuad(index, tempOpd);
+		proc->addQuad(setArg);
+		index++;
 	}
 	CallQuad * callquad = new CallQuad(myID->getSymbol());
 	proc->addQuad(callquad);
@@ -107,7 +117,7 @@ Opd * NegNode::flatten(Procedure * proc){
 Opd * NotNode::flatten(Procedure * proc){
 	Opd* e = myExp->flatten(proc);
 	Opd* temp = proc->makeTmp(e->getWidth());
-	Quad * quad = new UnaryOpQuad(temp, NOT8, e);
+	Quad * quad = new UnaryOpQuad(temp, NOT64, e);
 	proc->addQuad(quad);
 	return temp;
 }
@@ -115,7 +125,7 @@ Opd * NotNode::flatten(Procedure * proc){
 Opd * PlusNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, ADD64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -124,7 +134,7 @@ Opd * PlusNode::flatten(Procedure * proc){
 Opd * MinusNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, SUB64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -133,7 +143,7 @@ Opd * MinusNode::flatten(Procedure * proc){
 Opd * TimesNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, MULT64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -142,7 +152,7 @@ Opd * TimesNode::flatten(Procedure * proc){
 Opd * DivideNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, DIV64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -151,7 +161,7 @@ Opd * DivideNode::flatten(Procedure * proc){
 Opd * AndNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, AND64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -160,7 +170,7 @@ Opd * AndNode::flatten(Procedure * proc){
 Opd * OrNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, OR64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -169,7 +179,7 @@ Opd * OrNode::flatten(Procedure * proc){
 Opd * EqualsNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, EQ64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -178,7 +188,7 @@ Opd * EqualsNode::flatten(Procedure * proc){
 Opd * NotEqualsNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, NEQ64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -187,7 +197,7 @@ Opd * NotEqualsNode::flatten(Procedure * proc){
 Opd * LessNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, LT64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -196,7 +206,7 @@ Opd * LessNode::flatten(Procedure * proc){
 Opd * GreaterNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, GT64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -205,7 +215,7 @@ Opd * GreaterNode::flatten(Procedure * proc){
 Opd * LessEqNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, LTE64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -214,7 +224,7 @@ Opd * LessEqNode::flatten(Procedure * proc){
 Opd * GreaterEqNode::flatten(Procedure * proc){
 	Opd* lhs = myExp1->flatten(proc);
 	Opd* rhs = myExp2->flatten(proc);
-	Opd* temp = proc->makeTmp(lhs->getWidth() + rhs->getWidth());
+	Opd* temp = proc->makeTmp(lhs->getWidth());
 	Quad * quad = new BinOpQuad(temp, GTE64, lhs, rhs);
 	proc->addQuad(quad);
 	return temp;
@@ -241,7 +251,8 @@ void PostDecStmtNode::to3AC(Procedure * proc){
 void ReceiveStmtNode::to3AC(Procedure * proc){
 	Opd * arg = myDst->flatten(proc);
 	// const DataType * type = proc->getSymOpd(myDst->getSymbol());
-	ReceiveQuad * rcv = new ReceiveQuad(arg, nullptr);
+	const DataType * argType = proc->getProg()->nodeType(myDst);
+	ReceiveQuad * rcv = new ReceiveQuad(arg, argType);
 	proc->addQuad(rcv);
 }
 
@@ -249,7 +260,8 @@ void ReportStmtNode::to3AC(Procedure * proc){
 	Opd * arg = mySrc->flatten(proc);
 	// const DataType * type = proc->getProg()->nodeType(this);
 	// const DataType * type = 
-	ReportQuad * report = new ReportQuad(arg, nullptr);
+	const DataType * argType = proc->getProg()->nodeType(mySrc);
+	ReportQuad * report = new ReportQuad(arg, argType);
 	proc->addQuad(report);
 }
 
