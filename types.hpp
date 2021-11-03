@@ -177,7 +177,14 @@ public:
 	};
 	bool validVarType() const override { return true; }
 	std::string getString() const override { return name; }
-	size_t getSize() const override { TODO(Implement); }
+	size_t getSize() const override {
+		// TODO(Implement);
+		size_t size = 0;
+		for(auto const& x : *fieldTypes) {
+			size += x.second->getSize();
+		}
+		return size;
+	}
 	const RecordType * asRecord() const override { return this; }
 	bool isRecord() const override { return true; }
 

@@ -47,11 +47,11 @@ void FormalDeclNode::to3AC(Procedure * proc){
 }
 
 void RecordTypeDeclNode::to3AC(IRProgram * prog){
-	TODO(Implement me)
+	// nothing
 }
 
 void RecordTypeDeclNode::to3AC(Procedure * proc){
-	TODO(Implement me)	// never used?
+	// nothing
 }
 
 Opd * IntLitNode::flatten(Procedure * proc){
@@ -350,7 +350,15 @@ void VarDeclNode::to3AC(IRProgram * prog){
 }
 
 Opd * IndexNode::flatten(Procedure * proc){
-	TODO(Implement me)
+	// TODO(Implement me)
+
+	Opd * srcOpd = myBase->flatten(proc);
+	Opd * offOpd = myIdx->flatten(proc);
+	AddrOpd * dstOpd = proc->makeAddrOpd(offOpd->getWidth());
+
+	IndexQuad * index = new IndexQuad(dstOpd, srcOpd, offOpd);
+	proc->addQuad(index);
+	return dstOpd;
 }
 
 //We only get to this node if we are in a stmt
