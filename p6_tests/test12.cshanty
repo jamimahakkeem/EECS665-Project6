@@ -4,4 +4,6 @@ void main() {
 	while(i < 10) {
 		i++;
 	}
+	bool b;
+	b = true;
 }

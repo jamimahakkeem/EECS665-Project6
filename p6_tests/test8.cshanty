@@ -8,8 +8,4 @@ void main()
 {
 report "hello";
 fn(5,8);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> jamima1

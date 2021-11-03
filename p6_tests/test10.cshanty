@@ -5,5 +5,8 @@ int main() {
 		return 1;
 	}
 
+	bool b;
+	b = true;
+
 	return 0;
 }
